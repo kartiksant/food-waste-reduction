@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Donation - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="fas fa-hand-holding-heart"></i> Request Donation
+            </h1>
+            <p class="lead">Request this food item for your organization</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Food Item Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Food Item Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if food_item.image %}
+                                <img src="{{ food_item.image.url }}" class="img-fluid rounded" alt="{{ food_item.name }}">
+                            {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <i class="fas fa-utensils fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ food_item.name }}</h4>
+                            <p class="text-muted">{{ food_item.description }}</p>
+                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Available:</strong> {{ food_item.quantity }} {{ food_item.unit }}<br>
+                                    <strong>Expires:</strong> {{ food_item.expiry_date|date:"M d, Y H:i" }}<br>
+                                    <strong>Category:</strong> {{ food_item.category.name }}
+                                </div>
+                                <div class="col-6">
+                                    <strong>From:</strong> {{ food_item.contributor.organization_name|default:food_item.contributor.username }}<br>
+                                    <strong>Location:</strong> {{ food_item.pickup_location|truncatechars:50 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Request Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-envelope"></i> Request Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.requested_quantity.id_for_label }}" class="form-label">Requested Quantity</label>
+                            {{ form.requested_quantity }}
+                            <div class="form-text">Maximum available: {{ food_item.quantity }} {{ food_item.unit }}</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.pickup_time.id_for_label }}" class="form-label">Preferred Pickup Time</label>
+                            {{ form.pickup_time }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.message.id_for_label }}" class="form-label">Message (Optional)</label>
+                            {{ form.message }}
+                            <div class="form-text">Add any special requirements or notes</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'available_food' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Send Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success"></i> Be specific about your needs</li>
+                        <li class="mb-2"><i class="fas fa-check text-success"></i> Provide accurate pickup time</li>
+                        <li class="mb-2"><i class="fas fa-check text-success"></i> Mention any special requirements</li>
+                        <li class="mb-2"><i class="fas fa-check text-success"></i> Be respectful and grateful</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

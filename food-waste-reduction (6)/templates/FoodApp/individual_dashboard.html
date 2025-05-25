@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Individual Dashboard - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="fas fa-user"></i> Individual Dashboard
+            </h1>
+            <p class="lead">Welcome back, {{ user.username }}!</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-utensils fa-2x mb-2"></i>
+                    <h4>{{ total_meal_plans }}</h4>
+                    <p class="mb-0">Meal Plans</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-robot fa-2x mb-2"></i>
+                    <h4>AI</h4>
+                    <p class="mb-0">Meal Planner</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-box fa-2x mb-2"></i>
+                    <h4>{{ nearby_food.count }}</h4>
+                    <p class="mb-0">Available Items</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-leaf fa-2x mb-2"></i>
+                    <h4>Eco</h4>
+                    <p class="mb-0">Impact</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a href="{% url 'ai_meal_planner' %}" class="btn btn-primary">
+                            <i class="fas fa-robot"></i> AI Meal Planner
+                        </a>
+                        <a href="{% url 'available_food' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-search"></i> Browse Food
+                        </a>
+                        <a href="{% url 'meal_plans' %}" class="btn btn-outline-info">
+                            <i class="fas fa-list"></i> My Meal Plans
+                        </a>
+                        <a href="{% url 'analytics' %}" class="btn btn-outline-success">
+                            <i class="fas fa-chart-bar"></i> My Impact
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-box"></i> Available Food Near You</h5>
+                </div>
+                <div class="card-body">
+                    {% if nearby_food %}
+                        <div class="row">
+                            {% for item in nearby_food %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card card-hover urgency-{{ item.urgency }}">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ item.name }}</h6>
+                                            <p class="card-text small">{{ item.description|truncatechars:60 }}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">{{ item.quantity }} {{ item.unit }}</small>
+                                                <a href="{% url 'request_donation' item.id %}" class="btn btn-sm btn-primary">
+                                                    Request
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'available_food' %}" class="btn btn-primary">View All</a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No food available nearby. Check back later!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-utensils"></i> My Meal Plans</h5>
+                </div>
+                <div class="card-body">
+                    {% if my_meal_plans %}
+                        {% for plan in my_meal_plans %}
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                <div>
+                                    <strong>{{ plan.title }}</strong>
+                                    {% if plan.ai_generated %}
+                                        <span class="badge bg-info ms-1">AI</span>
+                                    {% endif %}
+                                    <br>
+                                    <small class="text-muted">{{ plan.servings }} servings • {{ plan.prep_time }} min</small>
+                                </div>
+                                <a href="{% url 'meal_plan_detail' plan.id %}" class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </div>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'meal_plans' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No meal plans yet.</p>
+                        <a href="{% url 'ai_meal_planner' %}" class="btn btn-primary btn-sm">Create First Plan</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

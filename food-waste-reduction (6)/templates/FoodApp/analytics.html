@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="fas fa-chart-bar"></i> Impact Analytics
+            </h1>
+            <p class="lead">Track your contribution to reducing food waste and environmental impact</p>
+        </div>
+    </div>
+
+    <!-- Personal Impact Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-weight fa-2x mb-2"></i>
+                    <h3>{{ total_food_saved }}kg</h3>
+                    <p class="mb-0">Food Saved</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-heart fa-2x mb-2"></i>
+                    <h3>{{ total_donations }}</h3>
+                    <p class="mb-0">Donations Made</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-leaf fa-2x mb-2"></i>
+                    <h3>{{ co2_reduced }}kg</h3>
+                    <p class="mb-0">CO₂ Reduced</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                    <h3>${{ money_saved }}</h3>
+                    <p class="mb-0">Money Saved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Platform Stats -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-globe"></i> Platform Impact</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <h4 class="text-primary">{{ global_stats.total_users }}</h4>
+                            <p class="text-muted mb-0">Total Users</p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h4 class="text-success">{{ global_stats.total_food_saved }}kg</h4>
+                            <p class="text-muted mb-0">Food Saved Globally</p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h4 class="text-info">{{ global_stats.total_donations }}</h4>
+                            <p class="text-muted mb-0">Successful Donations</p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h4 class="text-warning">{{ global_stats.active_contributors }}</h4>
+                            <p class="text-muted mb-0">Active Contributors</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Environmental Impact -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-tree"></i> Environmental Impact</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>CO₂ Emissions Reduced</span>
+                            <strong>{{ co2_reduced }}kg</strong>
+                        </div>
+                        <div class="progress mt-1">
+                            <div class="progress-bar bg-success" style="width: 75%"></div>
+                        </div>
+                        {% if co2_reduced > 0 %}
+                            <small class="text-muted">Equivalent to planting {{ co2_reduced|floatformat:0 }} trees</small>
+                        {% else %}
+                            <small class="text-muted">Start contributing to see your impact!</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Water Saved</span>
+                            <strong>{% widthratio total_food_saved 1 1000 %}L</strong>
+                        </div>
+                        <div class="progress mt-1">
+                            <div class="progress-bar bg-info" style="width: 60%"></div>
+                        </div>
+                        <small class="text-muted">Average 1000L per kg of food</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Landfill Waste Avoided</span>
+                            <strong>{{ total_food_saved }}kg</strong>
+                        </div>
+                        <div class="progress mt-1">
+                            <div class="progress-bar bg-warning" style="width: 85%"></div>
+                        </div>
+                        <small class="text-muted">Direct food waste reduction</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-trophy"></i> Achievements</h5>
+                </div>
+                <div class="card-body">
+                    <div class="achievement-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="achievement-icon me-3">
+                                {% if total_donations >= 10 %}
+                                    <i class="fas fa-medal text-warning fa-2x"></i>
+                                {% else %}
+                                    <i class="fas fa-medal text-muted fa-2x"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Food Hero</h6>
+                                <small class="text-muted">Make 10 donations ({{ total_donations }}/10)</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="achievement-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="achievement-icon me-3">
+                                {% if total_food_saved >= 50 %}
+                                    <i class="fas fa-star text-warning fa-2x"></i>
+                                {% else %}
+                                    <i class="fas fa-star text-muted fa-2x"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Waste Warrior</h6>
+                                <small class="text-muted">Save 50kg of food ({{ total_food_saved }}/50)</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="achievement-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="achievement-icon me-3">
+                                {% if co2_reduced >= 100 %}
+                                    <i class="fas fa-leaf text-success fa-2x"></i>
+                                {% else %}
+                                    <i class="fas fa-leaf text-muted fa-2x"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Eco Champion</h6>
+                                <small class="text-muted">Reduce 100kg CO₂ ({{ co2_reduced|floatformat:0 }}/100)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h4>Keep Making a Difference!</h4>
+                    <p class="mb-3">Your actions are creating real environmental impact. Continue your journey to reduce food waste.</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        {% if user.role == 'contributor' %}
+                            <a href="{% url 'add_food_item' %}" class="btn btn-light">
+                                <i class="fas fa-plus"></i> Add More Food
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'available_food' %}" class="btn btn-outline-light">
+                            <i class="fas fa-search"></i> Browse Available Food
+                        </a>
+                        <a href="{% url 'ai_meal_planner' %}" class="btn btn-outline-light">
+                            <i class="fas fa-robot"></i> Plan Meals
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

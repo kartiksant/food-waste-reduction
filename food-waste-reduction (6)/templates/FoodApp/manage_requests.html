@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Requests - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="fas fa-tasks"></i> Manage Donation Requests
+            </h1>
+            <p class="lead">Review and respond to incoming requests</p>
+        </div>
+    </div>
+
+    <!-- Requests -->
+    <div class="row">
+        {% if requests %}
+            {% for request in requests %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title">{{ request.food_item.name }}</h5>
+                                <span class="badge bg-{% if request.status == 'completed' %}success{% elif request.status == 'approved' %}info{% elif request.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                    {{ request.status|title }}
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Requested by:</strong> {{ request.recipient.organization_name|default:request.recipient.username }}<br>
+                                <strong>Quantity:</strong> {{ request.requested_quantity }} {{ request.food_item.unit }}<br>
+                                <strong>Available:</strong> {{ request.food_item.quantity }} {{ request.food_item.unit }}
+                            </div>
+                            
+                            {% if request.message %}
+                                <div class="mb-3">
+                                    <strong>Message:</strong><br>
+                                    <em>{{ request.message }}</em>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <small class="text-muted">Requested on: {{ request.created_at|date:"M d, Y H:i" }}</small>
+                            </div>
+                            
+                            {% if request.status == 'pending' %}
+                                <form method="POST" action="{% url 'approve_request' request.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                    <h4>No requests yet</h4>
+                    <p class="text-muted">Requests for your food items will appear here.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

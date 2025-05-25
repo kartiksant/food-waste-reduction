@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Waste Prediction - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-brain"></i> AI Waste Prediction
+                    </h3>
+                    <p class="mb-0">Predict food waste patterns and get AI recommendations</p>
+                </div>
+                
+                <div class="card-body">
+                    {% if ai_available %}
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.food_type.id_for_label }}" class="form-label">
+                                            <i class="fas fa-utensils"></i> Food Category
+                                        </label>
+                                        {{ form.food_type }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.analysis_period.id_for_label }}" class="form-label">
+                                            <i class="fas fa-calendar"></i> Analysis Period
+                                        </label>
+                                        {{ form.analysis_period }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.include_suggestions }}
+                                    <label class="form-check-label" for="{{ form.include_suggestions.id_for_label }}">
+                                        Include AI recommendations for waste reduction
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-chart-line"></i> Generate AI Prediction
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            AI prediction is temporarily unavailable. Please try again later.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Display Previous Predictions -->
+            {% if predictions %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i> Recent AI Predictions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for prediction in predictions %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="card-title">
+                                        {{ prediction.food_category.name }} Waste Prediction
+                                    </h6>
+                                    <p class="card-text">
+                                        <strong>Predicted Quantity:</strong> {{ prediction.predicted_quantity }} units<br>
+                                        <strong>Confidence:</strong> {{ prediction.confidence_score|floatformat:0 }}%<br>
+                                        <strong>Date:</strong> {{ prediction.predicted_waste_date }}
+                                    </p>
+                                    
+                                    {% if prediction.get_suggestions %}
+                                    <div class="mt-2">
+                                        <strong>AI Recommendations:</strong>
+                                        <ul class="mb-0">
+                                            {% for suggestion in prediction.get_suggestions %}
+                                            <li>{{ suggestion }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <small class="text-muted">
+                                        Generated {{ prediction.created_at|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

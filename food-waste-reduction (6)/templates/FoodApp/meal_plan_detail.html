@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ plan.title }} - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold text-primary">
+                        {{ plan.title }}
+                        {% if plan.ai_generated %}
+                            <span class="badge bg-info ms-2">AI Generated</span>
+                        {% endif %}
+                    </h1>
+                    <p class="lead">{{ plan.description }}</p>
+                </div>
+                <a href="{% url 'meal_plans' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Plans
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Instructions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list-ol"></i> Cooking Instructions</h5>
+                </div>
+                <div class="card-body">
+                    <div style="white-space: pre-line;">{{ plan.instructions }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Meal Info -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Meal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <h4>{{ plan.servings }}</h4>
+                            <p class="mb-0">Servings</p>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <i class="fas fa-clock fa-2x text-info mb-2"></i>
+                            <h4>{{ plan.prep_time }}</h4>
+                            <p class="mb-0">Minutes</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-2">
+                        <strong>Created:</strong> {{ plan.created_at|date:"M d, Y H:i" }}
+                    </div>
+                    
+                    {% if plan.ai_generated %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-robot"></i> This meal plan was generated using AI to help reduce food waste!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-carrot"></i> Ingredients</h5>
+                </div>
+                <div class="card-body">
+                    <div style="white-space: pre-line;">{{ plan.ingredients }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

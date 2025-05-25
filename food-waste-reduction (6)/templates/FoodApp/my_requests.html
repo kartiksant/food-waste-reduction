@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}My Requests - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="fas fa-envelope"></i> My Donation Requests
+            </h1>
+            <p class="lead">Track your food donation requests</p>
+        </div>
+    </div>
+
+    <!-- Requests -->
+    <div class="row">
+        {% if requests %}
+            {% for request in requests %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title">{{ request.food_item.name }}</h5>
+                                <span class="badge bg-{% if request.status == 'completed' %}success{% elif request.status == 'approved' %}info{% elif request.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                    {{ request.status|title }}
+                                </span>
+                            </div>
+                            
+                            <p class="card-text">{{ request.food_item.description|truncatechars:100 }}</p>
+                            
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <small class="text-muted">Requested</small><br>
+                                    <strong>{{ request.requested_quantity }} {{ request.food_item.unit }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">From</small><br>
+                                    <strong>{{ request.food_item.contributor.organization_name|default:request.food_item.contributor.username }}</strong>
+                                </div>
+                            </div>
+                            
+                            {% if request.message %}
+                                <div class="mb-3">
+                                    <small class="text-muted">Message:</small><br>
+                                    <em>{{ request.message }}</em>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ request.created_at|date:"M d, Y H:i" }}</small>
+                                {% if request.pickup_time %}
+                                    <small class="text-info">Pickup: {{ request.pickup_time|date:"M d, H:i" }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+                    <h4>No requests yet</h4>
+                    <p class="text-muted">Browse available food and make your first request.</p>
+                    <a href="{% url 'available_food' %}" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Browse Food
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-6 fw-bold text-primary">
+                    <i class="fas fa-bell"></i> Notifications
+                </h1>
+                <p class="lead">Stay updated with your FoodSaver activity</p>
+            </div>
+            {% if notifications %}
+                <a href="?mark_read=true" class="btn btn-outline-primary">
+                    <i class="fas fa-check"></i> Mark All Read
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="row">
+        <div class="col-12">
+            {% if notifications %}
+                {% for notification in notifications %}
+                    <div class="card mb-3 {% if not notification.is_read %}border-primary{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title">
+                                        {% if notification.type == 'donation_request' %}
+                                            <i class="fas fa-hand-holding-heart text-primary"></i>
+                                        {% elif notification.type == 'expiry_alert' %}
+                                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                                        {% elif notification.type == 'pickup_reminder' %}
+                                            <i class="fas fa-clock text-info"></i>
+                                        {% else %}
+                                            <i class="fas fa-info-circle text-secondary"></i>
+                                        {% endif %}
+                                        {{ notification.title }}
+                                        {% if not notification.is_read %}
+                                            <span class="badge bg-primary ms-2">New</span>
+                                        {% endif %}
+                                    </h6>
+                                    <p class="card-text">{{ notification.message }}</p>
+                                    <small class="text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-bell fa-3x text-muted mb-3"></i>
+                    <h4>No notifications</h4>
+                    <p class="text-muted">You're all caught up! New notifications will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

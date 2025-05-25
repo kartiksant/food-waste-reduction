@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}FoodSaver - Sustainable Food Waste Reduction{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-leaf"></i> Reduce Food Waste, Save the Planet
+                </h1>
+                <p class="lead mb-4">
+                    Join our AI-powered platform connecting restaurants, charities, and individuals 
+                    to fight food waste and create a sustainable future.
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 me-md-2">
+                        <i class="fas fa-user-plus"></i> Get Started
+                    </a>
+                    <a href="{% url 'available_food' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-search"></i> Browse Food
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Platform Statistics -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card h-100 p-4">
+                    <div class="card-body">
+                        <i class="fas fa-box fa-3x mb-3"></i>
+                        <h3 class="fw-bold">{{ total_food_saved }}</h3>
+                        <p class="mb-0">Items Saved</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card h-100 p-4">
+                    <div class="card-body">
+                        <i class="fas fa-heart fa-3x mb-3"></i>
+                        <h3 class="fw-bold">{{ total_donations }}</h3>
+                        <p class="mb-0">Donations Made</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card h-100 p-4">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h3 class="fw-bold">{{ active_contributors }}</h3>
+                        <p class="mb-0">Active Contributors</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card h-100 p-4">
+                    <div class="card-body">
+                        <i class="fas fa-leaf fa-3x mb-3"></i>
+                        <h3 class="fw-bold">{{ total_food_saved|floatformat:0 }}kg</h3>
+                        <p class="mb-0">CO₂ Reduced</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">How It Works</h2>
+                <p class="lead">Simple steps to make a big impact</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card card-hover h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-store fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">For Restaurants & Grocers</h5>
+                        <p class="card-text">
+                            List surplus food items with expiry tracking. 
+                            Get matched with local charities and individuals.
+                        </p>
+                        <a href="{% url 'register' %}" class="btn btn-primary">Join as Contributor</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card card-hover h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-hands-helping fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">For Charities & Food Banks</h5>
+                        <p class="card-text">
+                            Access fresh food donations from local businesses. 
+                            Coordinate pickups and manage distribution efficiently.
+                        </p>
+                        <a href="{% url 'register' %}" class="btn btn-success">Join as Recipient</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card card-hover h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-robot fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title">AI-Powered Meal Planning</h5>
+                        <p class="card-text">
+                            Get personalized meal suggestions using available ingredients. 
+                            Reduce household waste with smart planning.
+                        </p>
+                        <a href="{% url 'register' %}" class="btn btn-info">Start Planning</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold mb-4">Ready to Make a Difference?</h2>
+                <p class="lead mb-4">
+                    Join thousands of users already reducing food waste and creating positive impact.
+                </p>
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5">
+                    <i class="fas fa-rocket"></i> Get Started Today
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

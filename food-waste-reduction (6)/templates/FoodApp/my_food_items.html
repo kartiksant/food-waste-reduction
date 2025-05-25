@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}My Food Items - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-6 fw-bold text-primary">
+                    <i class="fas fa-box"></i> My Food Items
+                </h1>
+                <p class="lead">Manage your contributed food items</p>
+            </div>
+            <a href="{% url 'add_food_item' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Item
+            </a>
+        </div>
+    </div>
+
+    <!-- Food Items -->
+    <div class="row">
+        {% if items %}
+            {% for item in items %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card card-hover h-100 urgency-{{ item.urgency }}">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-utensils fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">{{ item.name }}</h5>
+                                <span class="badge bg-{% if item.status == 'available' %}success{% elif item.status == 'reserved' %}warning{% elif item.status == 'donated' %}primary{% else %}secondary{% endif %}">
+                                    {{ item.get_status_display }}
+                                </span>
+                            </div>
+                            
+                            <p class="card-text">{{ item.description|truncatechars:100 }}</p>
+                            
+                            <div class="row text-center mb-3">
+                                <div class="col-6">
+                                    <small class="text-muted">Quantity</small><br>
+                                    <strong>{{ item.quantity }} {{ item.unit }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Expires</small><br>
+                                    <strong>{{ item.expiry_date|date:"M d" }}</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <span class="badge bg-{% if item.urgency == 'critical' %}danger{% elif item.urgency == 'high' %}warning{% elif item.urgency == 'medium' %}info{% else %}success{% endif %}">
+                                    {{ item.get_urgency_display }}
+                                </span>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <small class="text-muted d-block mb-2">
+                                    Created: {{ item.created_at|date:"M d, Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                    <h4>No food items yet</h4>
+                    <p class="text-muted">Start contributing by adding your first food item.</p>
+                    <a href="{% url 'add_food_item' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

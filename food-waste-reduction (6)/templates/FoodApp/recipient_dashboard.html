@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipient Dashboard - FoodSaver{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="fas fa-hands-helping"></i> Recipient Dashboard
+            </h1>
+            <p class="lead">Welcome back, {{ user.organization_name|default:user.username }}!</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-2x mb-2"></i>
+                    <h4>{{ my_requests.count }}</h4>
+                    <p class="mb-0">Total Requests</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-check fa-2x mb-2"></i>
+                    <h4>{{ completed_donations }}</h4>
+                    <p class="mb-0">Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-2x mb-2"></i>
+                    <h4>{{ pending_requests }}</h4>
+                    <p class="mb-0">Pending</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-box fa-2x mb-2"></i>
+                    <h4>{{ available_food.count }}</h4>
+                    <p class="mb-0">Available Items</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a href="{% url 'available_food' %}" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Browse Available Food
+                        </a>
+                        <a href="{% url 'my_requests' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-list"></i> My Requests
+                        </a>
+                        <a href="{% url 'analytics' %}" class="btn btn-outline-success">
+                            <i class="fas fa-chart-bar"></i> View Impact
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Food -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-box"></i> Available Food Near You</h5>
+                </div>
+                <div class="card-body">
+                    {% if available_food %}
+                        <div class="row">
+                            {% for item in available_food %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card card-hover urgency-{{ item.urgency }}">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ item.name }}</h6>
+                                            <p class="card-text small">{{ item.description|truncatechars:80 }}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">{{ item.quantity }} {{ item.unit }}</small>
+                                                <a href="{% url 'request_donation' item.id %}" class="btn btn-sm btn-primary">
+                                                    Request
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'available_food' %}" class="btn btn-primary">View All Available Food</a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No food available at the moment. Check back later!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-history"></i> Recent Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if my_requests %}
+                        {% for request in my_requests %}
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                <div>
+                                    <strong>{{ request.food_item.name }}</strong><br>
+                                    <small class="text-muted">{{ request.requested_quantity }} {{ request.food_item.unit }}</small>
+                                </div>
+                                <span class="badge bg-{% if request.status == 'completed' %}success{% elif request.status == 'approved' %}info{% elif request.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                    {{ request.status|title }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'my_requests' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No requests yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
